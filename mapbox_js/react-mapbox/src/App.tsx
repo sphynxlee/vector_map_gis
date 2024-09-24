@@ -8,6 +8,7 @@ import './App.css'
 
 const INITIAL_CENTER: LngLatLike = [116.4, 39.9];
 const INITIAL_ZOOM: number = 10.12;
+mapboxgl.accessToken = constants.accessToken.mapbox;
 
 function App() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -17,33 +18,56 @@ function App() {
   const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
 
   useEffect(() => {
-    if (mapContainerRef.current) {
-      mapboxgl.accessToken = constants.accessToken.mapbox;
-
-      mapRef.current = new mapboxgl.Map({
-        container: mapContainerRef.current,
-        center: center,
-        zoom: zoom
-      });
-
-      mapRef.current.addControl(new mapboxgl.NavigationControl());
-
-      mapRef.current.on('move', () => {
-        const mapCenter = mapRef.current?.getCenter();
-        const mapZoom = mapRef.current?.getZoom();
-
-        setCenter([mapCenter?.lng as number, mapCenter?.lat as number]);
-        setZoom(mapZoom as number);
-      });
+    if (!mapContainerRef.current) return;
+    if (mapRef.current) return;
 
 
-      return () => {
-        if (mapRef.current) {
-          mapRef.current.remove();
-        }
-      }
-    }
+    mapRef.current = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      center: center,
+      zoom: zoom
+    });
+
+    mapRef.current.addControl(
+      new mapboxgl.NavigationControl(),
+      'bottom-right'
+    );
+
+    mapRef.current.addControl(
+      new mapboxgl.FullscreenControl(),
+      'bottom-right'
+    );
+
+    mapRef.current.addControl(
+      new window.MapboxDirections({
+        accessToken: mapboxgl.accessToken,
+      }),
+      'top-left'
+    );
+
   }, []);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    const handleMove = () => {
+      const mapCenter = mapRef.current?.getCenter();
+      const mapZoom = mapRef.current?.getZoom();
+
+      setCenter([mapCenter?.lng as number, mapCenter?.lat as number]);
+      setZoom(mapZoom as number);
+    };
+
+    mapRef.current.on('move', handleMove);
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.off('move', handleMove);
+        // mapRef.current.remove();
+      }
+    };
+  }, []);
+
 
   const handleResetButtonClick = () => {
     mapRef.current?.flyTo({
