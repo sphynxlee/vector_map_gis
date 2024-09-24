@@ -16,10 +16,10 @@ function App() {
   const [center, setCenter] = useState<LngLatLike>(INITIAL_CENTER);
   const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
 
-
   useEffect(() => {
-    mapboxgl.accessToken = constants.accessToken.mapbox;
     if (mapContainerRef.current) {
+      mapboxgl.accessToken = constants.accessToken.mapbox;
+
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         center: center,
@@ -33,11 +33,12 @@ function App() {
         setCenter([mapCenter?.lng as number, mapCenter?.lat as number]);
         setZoom(mapZoom as number);
       });
-    }
 
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
+
+      return () => {
+        if (mapRef.current) {
+          mapRef.current.remove();
+        }
       }
     }
   }, []);
@@ -55,7 +56,7 @@ function App() {
         Longitude: {(center as number[])[0].toFixed(4)}, Latitude: {(center as number[])[1].toFixed(4)}, Zoom: {zoom.toFixed(2)}
       </div>
       <button className='reset-button' onClick={handleResetButtonClick} >Reset</button>
-      <div id='map-container' ref={mapContainerRef}/>
+      <div id='map-container' ref={mapContainerRef} />
     </>
   )
 }
