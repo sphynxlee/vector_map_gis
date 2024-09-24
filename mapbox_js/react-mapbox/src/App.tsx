@@ -24,8 +24,8 @@ function App() {
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
-      center: center,
-      zoom: zoom
+      center: INITIAL_CENTER,
+      zoom: INITIAL_ZOOM
     });
 
     mapRef.current.addControl(
