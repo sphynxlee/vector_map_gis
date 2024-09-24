@@ -26,6 +26,8 @@ function App() {
         zoom: zoom
       });
 
+      mapRef.current.addControl(new mapboxgl.NavigationControl());
+
       mapRef.current.on('move', () => {
         const mapCenter = mapRef.current?.getCenter();
         const mapZoom = mapRef.current?.getZoom();
