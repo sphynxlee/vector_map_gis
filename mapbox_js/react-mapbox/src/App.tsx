@@ -6,7 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import constants from './map-config/constants.json';
 import './App.css'
 
-const INITIAL_CENTER: LngLatLike = [-74.0242, 40.6941];
+const INITIAL_CENTER: LngLatLike = [116.4, 39.9];
 const INITIAL_ZOOM: number = 10.12;
 
 function App() {
@@ -22,7 +22,6 @@ function App() {
     if (mapContainerRef.current) {
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
-        // center: [116.4, 39.9],
         center: center,
         zoom: zoom
       });
@@ -43,11 +42,19 @@ function App() {
     }
   }, []);
 
+  const handleResetButtonClick = () => {
+    mapRef.current?.flyTo({
+      center: INITIAL_CENTER,
+      zoom: INITIAL_ZOOM
+    });
+  };
+
   return (
     <>
       <div className="sidebar">
         Longitude: {(center as number[])[0].toFixed(4)}, Latitude: {(center as number[])[1].toFixed(4)}, Zoom: {zoom.toFixed(2)}
       </div>
+      <button className='reset-button' onClick={handleResetButtonClick} >Reset</button>
       <div id='map-container' ref={mapContainerRef}/>
     </>
   )
