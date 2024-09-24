@@ -10,12 +10,12 @@ const INITIAL_CENTER: LngLatLike = [-74.0242, 40.6941];
 const INITIAL_ZOOM: number = 10.12;
 
 function App() {
-
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   const [center, setCenter] = useState<LngLatLike>(INITIAL_CENTER);
   const [zoom, setZoom] = useState<number>(INITIAL_ZOOM);
+
 
   useEffect(() => {
     mapboxgl.accessToken = constants.accessToken.mapbox;
@@ -41,7 +41,7 @@ function App() {
         mapRef.current.remove();
       }
     }
-  }, [center, zoom]);
+  }, []);
 
   return (
     <>
